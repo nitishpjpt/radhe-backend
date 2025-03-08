@@ -15,7 +15,7 @@ const app = express();
 // CORS configuration
 app.use(
   cors({
-    origin: "https://radhe-frontendss.vercel.app", // React frontend URL
+    origin: "https://radhelaptops.com", // React frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type"],
     credentials: true, // Allow cookies with requests
