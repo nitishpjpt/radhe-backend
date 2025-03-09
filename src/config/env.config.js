@@ -12,8 +12,8 @@ class Config {
   constructor() {
     this.MONGODB_URL = process.env.MONGODB_URL;
     this.JWT_SECRET = process.env.JWT_SECRET;
-    this.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID
-    this.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET
+    this.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+    this.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
   }
 }
 

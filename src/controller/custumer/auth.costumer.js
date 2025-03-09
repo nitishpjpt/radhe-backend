@@ -56,45 +56,33 @@ const custumerLogin = AsyncHandler(async (req, res) => {
   });
 });
 
-// Controller for adding product to cart
-const addToCart = AsyncHandler(async (req, res) => {
+
+const addToCart = async (req, res) => {
   const { customerId, productId, quantity } = req.body;
-  console.log('Request Body:', req.body);
 
   if (!customerId || !productId || !quantity) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // Find the customer by ID
-  const customer = await Custumer.findById(customerId);
+  try {
+    // Find the customer
+    const customer = await Custumer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
 
-  if (!customer) {
-    return res.status(404).json({ message: 'Customer not found' });
+    // Use the addToCart method
+    await customer.addToCart(productId, quantity);
+
+    res.status(200).json({
+      message: 'Product added to cart successfully',
+      cart: customer.cart,
+    });
+  } catch (error) {
+    console.error('Error in addToCart:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
-
-  // Check if the product already exists in the cart
-  const existingCartItem = customer.cart.find(
-    (item) => item.product.toString() === productId,
-  );
-
-  if (existingCartItem) {
-    // Update quantity if the product already exists
-    existingCartItem.quantity += quantity;
-  } else {
-    // Add new product to the cart
-    customer.cart.push({ product: productId, quantity });
-  }
-
-  console.log('Updated Customer Cart:', customer.cart);
-
-  // Save the updated customer document
-  await customer.save();
-
-  res.status(200).json({
-    message: 'Product added to cart successfully',
-    cart: customer.cart,
-  });
-});
+};
 const mergeGuestCart = AsyncHandler(async (req, res) => {
   const { customerId, guestCart } = req.body;
 
@@ -103,7 +91,7 @@ const mergeGuestCart = AsyncHandler(async (req, res) => {
   }
 
   const customer = await Custumer.findById(customerId);
-  console.log(customer);
+  
 
   if (!customer) {
     return res.status(404).json({ message: 'Customer not found' });
@@ -135,8 +123,6 @@ const removeFromCart = AsyncHandler(async (req, res) => {
   const { productId } = req.params; // Access productId from URL parameters
   const { customerId } = req.body; // Access customerId from the request body
 
-  console.log("Product ID to remove:", productId);
-  console.log("Customer ID:", customerId);
 
   if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
@@ -169,7 +155,7 @@ const removeFromCart = AsyncHandler(async (req, res) => {
 // PUT /custumer/cart/update - Update the quantity of a product in the cart
 const updateCartItemQuantity = AsyncHandler(async (req, res) => {
   const { customerId, productId, quantity } = req.body;
-  console.log( customerId, productId, quantity )
+ 
 
   if (!customerId || !productId || !quantity) {
     return res.status(400).json({ message: "All fields are required" });
@@ -204,7 +190,7 @@ const updateCartItemQuantity = AsyncHandler(async (req, res) => {
 });
 const getCartItems = AsyncHandler(async (req, res) => {
   const { customerId } = req.body;
-  console.log(customerId);
+
 
   if (!customerId) {
       return res.status(400).json({ message: "Customer ID is required" });
@@ -216,7 +202,7 @@ const getCartItems = AsyncHandler(async (req, res) => {
       select: "_id productName price image", // Include _id in the selected fields
   });
 
-  console.log(customer);
+ 
   if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
   }

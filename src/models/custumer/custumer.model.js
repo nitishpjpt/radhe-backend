@@ -75,7 +75,14 @@ custumerSchema.methods.comparePassword = async function (enteredPassword) {
 };
 // 🔹 Method: Add item to cart
 custumerSchema.methods.addToCart = function (productId, quantity = 1) {
-  const cartItem = this.cart.find((item) => item.product.toString() === productId.toString());
+  if (!productId) {
+    throw new Error('Product ID is required');
+  }
+
+  const cartItem = this.cart.find((item) => {
+    if (!item.product || !productId) return false;
+    return item.product.toString() === productId.toString();
+  });
 
   if (cartItem) {
     cartItem.quantity += quantity; // Update quantity if item already exists

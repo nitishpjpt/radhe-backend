@@ -1,11 +1,15 @@
 import Razorpay from "razorpay";
-import crypto from "crypto"; // Import the crypto module
+import crypto from "crypto";
 import { config } from "../config/env.config.js";
+
+// Debugging: Log Razorpay credentials
+console.log("Razorpay Key ID:", config.RAZORPAY_KEY_ID);
+console.log("Razorpay Key Secret:", config.RAZORPAY_KEY_SECRET);
 
 // Initialize Razorpay
 const razorpayInstance = new Razorpay({
-  key_id: config.RAZORPAY_KEY_ID, // Ensure this is set in your .env file
-  key_secret: config.RAZORPAY_KEY_SECRET, // Ensure this is set in your .env file
+  key_id: config.RAZORPAY_KEY_ID,
+  key_secret: config.RAZORPAY_KEY_SECRET,
 });
 
 // Verify Payment Endpoint
@@ -13,6 +17,11 @@ const razorpay = async (req, res) => {
   try {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
       req.body;
+
+    // Validate the request payload
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+      return res.status(400).json({ error: "Missing payment details" });
+    }
 
     // Create the expected signature
     const expectedSignature = crypto
@@ -44,12 +53,18 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ error: "Amount and receipt are required" });
     }
 
+    // Ensure the amount is in paise (e.g., 1000 = ₹10)
+    const amountInPaise = parseInt(amount, 10);
+    if (isNaN(amountInPaise)) {
+      return res.status(400).json({ error: "Invalid amount" });
+    }
+
     // Create Razorpay order
     const order = await razorpayInstance.orders.create({
-      amount: amount, // Amount in paise (e.g., 1000 = ₹10)
-      currency: currency || "INR", // Default currency is INR
-      receipt: receipt, // Unique receipt ID
-      payment_capture: 1, // Auto-capture payment
+      amount: amountInPaise,
+      currency: currency || "INR",
+      receipt: receipt,
+      payment_capture: 1,
     });
 
     // Return the order ID to the frontend
