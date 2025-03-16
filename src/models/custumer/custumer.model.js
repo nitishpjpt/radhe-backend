@@ -31,6 +31,18 @@ const custumerSchema = mongoose.Schema({
       },
     },
   ],
+  whitelist: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product', // Reference to the Product model
+      },
+      addedAt: {
+        type: Date,
+        default: Date.now, // Track when the product was added to the whitelist
+      },
+    },
+  ],
   orderHistory: [
     {
       items: [
@@ -46,6 +58,7 @@ const custumerSchema = mongoose.Schema({
       totalPrice: Number,
       shippingCost: Number,
       country: String,
+      
       orderDate: {
         type: Date,
         default: Date.now,

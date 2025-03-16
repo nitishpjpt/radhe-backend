@@ -148,3 +148,33 @@ export const clearCart = async (req, res) => {
       res.status(500).json({ message: 'Failed to clear cart and update order history.', error: err.message });
     }
   };
+
+  // Get Customer Order History
+  export const getCustomerOrderHistory = async (req, res) => {
+    const { customerId } = req.params; // Extract customerId from request parameters
+  
+    try {
+      // Find the customer by ID and populate the product details in orderHistory
+      const customer = await Custumer.findById(customerId).populate({
+        path: 'orderHistory.items.product',
+        select: 'name brandName price image productName', // Select only the required fields
+      });
+  
+      if (!customer) {
+        return res.status(404).json({ message: 'Customer not found.' });
+      }
+  
+      // Extract the order history
+      const orderHistory = customer.orderHistory;
+  
+      // If no order history exists
+      if (!orderHistory || orderHistory.length === 0) {
+        return res.status(200).json({ message: 'No order history found.', orderHistory: [] });
+      }
+  
+      // Return the order history
+      res.status(200).json({ message: 'Order history retrieved successfully.', orderHistory });
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to retrieve order history.', error: err.message });
+    }
+  };

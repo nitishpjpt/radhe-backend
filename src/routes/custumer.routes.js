@@ -15,6 +15,7 @@ import {
   saveCustomerInfo,
   sendOrderSummary,
   clearCart,
+  getCustomerOrderHistory,
 } from "../nodemailer.js";
 import{ createOrder, razorpay} from "../razorpayIntegration/razorpay.js";
 
@@ -28,6 +29,7 @@ routes.post("/cart/merge", mergeGuestCart);
 routes.delete("/cart/remove/:productId", removeFromCart);
 
 routes.post("/save-customer-info", saveCustomerInfo);
+routes.get('/:customerId/order-history', getCustomerOrderHistory);
 routes.post("/send-order-summary", sendOrderSummary);
 routes.post("/clear-cart", clearCart);
 

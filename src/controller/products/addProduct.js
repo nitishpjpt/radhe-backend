@@ -44,8 +44,9 @@ const addProduct = async (req, res) => {
 // Update a product by ID
 const editProduct = async (req, res) => {
   try {
-    const { brandName, productName, price } = req.body;
-    const updateData = { brandName, productName, price };
+    const { brandName, productName, price , description } = req.body;
+    console.log(req.body)
+    const updateData = { brandName, productName, price , description};
 
     // If a file was uploaded, update the image path
     if (req.file) {
