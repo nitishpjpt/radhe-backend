@@ -10,9 +10,9 @@ const addProduct = async (req, res) => {
     console.log(req.file);
 
     // Validate request body fields
-    const { productName, price, description, brandName, category } = req.body;
+    const { productName, price, description, brandName, category , subcategory} = req.body;
     console.log(req.body);
-    if (!productName || !price || !description || !brandName || !category) {
+    if (!productName || !price || !description || !brandName || !category || !subcategory) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -27,6 +27,7 @@ const addProduct = async (req, res) => {
       brandName,
       productName,
       category,
+      subcategory,
       image: imageUrl,
     });
 
@@ -44,9 +45,9 @@ const addProduct = async (req, res) => {
 // Update a product by ID
 const editProduct = async (req, res) => {
   try {
-    const { brandName, productName, price , description } = req.body;
+    const { brandName, productName, price , description,subcategory } = req.body;
     console.log(req.body)
-    const updateData = { brandName, productName, price , description};
+    const updateData = { brandName, productName, price , description,subcategory};
 
     // If a file was uploaded, update the image path
     if (req.file) {

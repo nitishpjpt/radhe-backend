@@ -65,15 +65,21 @@ const custumerSchema = mongoose.Schema({
       },
     },
   ],
+  resetPasswordToken: String,
+  resetPasswordExpire: Date
 });
 // 🔹 Middleware: Hash password before saving
-custumerSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+custumerSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next(); // Prevents double hashing
 
+  console.log("Hashing password before saving...");
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  console.log("Final Hashed Password Before Save:", this.password);
+  
   next();
 });
+
 
 // 🔹 Method: Generate JWT Token
 custumerSchema.methods.generateToken = function () {
@@ -82,10 +88,14 @@ custumerSchema.methods.generateToken = function () {
   });
 };
 
-// 🔹 Method: Compare Password
-custumerSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+// Function to compare the password
+custumerSchema.methods.isPasswordCorrect = async function (password) {
+  if (!password || typeof password !== "string") {
+    throw new Error("Invalid password provided for comparison.");
+  }
+  return await bcrypt.compare(password, this.password);
 };
+
 // 🔹 Method: Add item to cart
 custumerSchema.methods.addToCart = function (productId, quantity = 1) {
   if (!productId) {

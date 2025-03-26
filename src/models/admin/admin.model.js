@@ -18,7 +18,9 @@ const adminSchema = mongoose.Schema({
   },
   role:{
     type:String
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date
 });
 
 // 🔹 Middleware: Hash password before saving

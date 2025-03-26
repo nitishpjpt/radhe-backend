@@ -35,6 +35,7 @@ const addWhiteList = async (req, res) => {
 // Remove a product from the whitelist
 const removeWhiteList = async (req, res) => {
   const { customerId, productId } = req.body;
+  console.log(req.body);
 
   try {
     const custumer = await Custumer.findById(customerId);

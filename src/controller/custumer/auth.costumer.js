@@ -1,6 +1,7 @@
 import { Custumer } from '../../models/custumer/custumer.model.js';
 import { AsyncHandler } from '../../utils/AyncHandler.js';
 import { AlreadyExist, NotFoundError } from '../../utils/custumError.js';
+import bcrypt from 'bcryptjs';
 
 const custumerRegister = AsyncHandler(async (req, res) => {
   const { name, email, password, address } = req.body;
@@ -33,7 +34,7 @@ const custumerLogin = AsyncHandler(async (req, res) => {
   }
 
   // Check if the password matches
-  const isPasswordValid = await custumer.comparePassword(password);
+  const isPasswordValid = await bcrypt.compare(password, custumer.password);
   if (!isPasswordValid) {
     return res.status(401).json({ message: 'Password is wrong' });
   }
