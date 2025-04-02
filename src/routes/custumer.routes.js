@@ -8,6 +8,8 @@ import {
   getCartItems,
   updateCustomerProfile,
   updateCartItemQuantity,
+  getAllCustumerDetails,
+  getOrderById,
 } from "../controller/custumer/auth.costumer.js";
 import { validator } from "../helper/validator.js";
 import { authValidation, loginValidation } from "../validation/validation.js";
@@ -24,6 +26,8 @@ const routes = Router();
 routes.post("/register", validator(authValidation), custumerRegister);
 routes.post("/login", validator(loginValidation), custumerLogin);
 routes.post("/logout", custumerLogin);
+routes.get("/orders/:orderId", getOrderById);
+routes.get("/all/details" , getAllCustumerDetails)
 routes.post("/cart/add", addToCart);
 routes.post("/cart/merge", mergeGuestCart);
 routes.delete("/cart/remove/:productId", removeFromCart);

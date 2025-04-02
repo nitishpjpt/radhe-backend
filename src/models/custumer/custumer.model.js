@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 const custumerSchema = mongoose.Schema({
   name: {
@@ -23,7 +23,7 @@ const custumerSchema = mongoose.Schema({
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product', // Reference to the Product model
+        ref: "Product", // Reference to the Product model
       },
       quantity: {
         type: Number,
@@ -35,7 +35,7 @@ const custumerSchema = mongoose.Schema({
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product', // Reference to the Product model
+        ref: "Product", // Reference to the Product model
       },
       addedAt: {
         type: Date,
@@ -49,7 +49,7 @@ const custumerSchema = mongoose.Schema({
         {
           product: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: "Product",
           },
           quantity: Number,
           price: Number, // Store the price at the time of purchase
@@ -58,7 +58,17 @@ const custumerSchema = mongoose.Schema({
       totalPrice: Number,
       shippingCost: Number,
       country: String,
-      
+      status: {
+        type: String,
+        enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+        default: "pending",
+      },
+      changedAt: {
+        type: Date,
+        default: Date.now,
+      },
+
+      note: String,
       orderDate: {
         type: Date,
         default: Date.now,
@@ -66,7 +76,7 @@ const custumerSchema = mongoose.Schema({
     },
   ],
   resetPasswordToken: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
 });
 // 🔹 Middleware: Hash password before saving
 custumerSchema.pre("save", async function (next) {
@@ -76,15 +86,14 @@ custumerSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   console.log("Final Hashed Password Before Save:", this.password);
-  
+
   next();
 });
-
 
 // 🔹 Method: Generate JWT Token
 custumerSchema.methods.generateToken = function () {
   return jwt.sign({ id: this._id, email: this.email }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: "1h",
   });
 };
 
@@ -99,7 +108,7 @@ custumerSchema.methods.isPasswordCorrect = async function (password) {
 // 🔹 Method: Add item to cart
 custumerSchema.methods.addToCart = function (productId, quantity = 1) {
   if (!productId) {
-    throw new Error('Product ID is required');
+    throw new Error("Product ID is required");
   }
 
   const cartItem = this.cart.find((item) => {
@@ -122,4 +131,4 @@ custumerSchema.methods.clearCart = function () {
   return this.save();
 };
 
-export const Custumer = mongoose.model('Custumer', custumerSchema);
+export const Custumer = mongoose.model("Custumer", custumerSchema);
