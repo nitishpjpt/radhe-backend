@@ -5,6 +5,7 @@ import custumerRoutes from "./custumer.routes.js";
 import whiteListRoutes from "./whiteList.routes.js";
 import contactRoutes from "./contact.routes.js";
 import forgotPasswordRoutes from "./forgotpassword.routes.js"
+import otpRoutes from "../routes/otp.routes.js";
 
 
 const routes = Router();
@@ -15,5 +16,6 @@ routes.use("/custumer", custumerRoutes);
 routes.use("/whitelist", whiteListRoutes);
 routes.use("/contact", contactRoutes);
 routes.use("/forgot-password", forgotPasswordRoutes);
+routes.use("/otp", otpRoutes);
 
 export default routes;

@@ -4,10 +4,6 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config(); 
 
-// Log to check if credentials are loaded
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "Exists" : "Missing");
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
